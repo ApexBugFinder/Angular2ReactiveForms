@@ -17,7 +17,7 @@ export class CustomerComponent implements OnInit  {
     // to insure that the customerForm in instantiated before the page loads
     customerForm: FormGroup;
     customer: Customer= new Customer();
-
+    counter: number;
     constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {
@@ -29,6 +29,7 @@ export class CustomerComponent implements OnInit  {
             email: '',
             sendCatalog: true
         });
+        this.counter = 0;
 
         // Reactive Forms Using FormGroup
 
@@ -47,7 +48,13 @@ export class CustomerComponent implements OnInit  {
     //     console.log(customerForm.form);
     //     console.log('Saved: ' + JSON.stringify(customerForm.value));
     // }
+    save(): void {
+        this.counter = this.counter + 1;
+        console.log('Save Counter: ' + this.counter);
+        console.log(this.customerForm);
+        console.log('Saved: ' + JSON.stringify(this.customerForm.value));
 
+    }
     // You can populate the form with test data using setValue and patchValue
     // setValue requires that you popluate every formControl of the formGroup (every input field of the form)
     // setValue if all the values are not populated then an error will be thrown
@@ -59,6 +66,7 @@ export class CustomerComponent implements OnInit  {
             email: 'jackssnatch@gmail.com',
             sendCatalog: false
         });
+        console.log('Updated: ' + JSON.stringify(this.customerForm.value));
     }
     populateTestData2(): void {
         this.customerForm.patchValue({
@@ -66,9 +74,7 @@ export class CustomerComponent implements OnInit  {
             lastName: 'all',
             email: this.customerForm.get('email').value
         });
+        console.log('Updated: ' + JSON.stringify(this.customerForm.value));
     }
-    save(): void {
-        console.log(this.customerForm);
-        console.log('Saved: ' + JSON.stringify(this.customerForm.value));
-    }
+
  }
