@@ -34,5 +34,27 @@ export class CustomerComponent implements OnInit  {
     //     console.log('Saved: ' + JSON.stringify(customerForm.value));
     // }
 
-
+    // You can populate the form with test data using setValue and patchValue
+    // setValue requires that you popluate every formControl of the formGroup (every input field of the form)
+    // setValue if all the values are not populated then an error will be thrown
+    // patchValue allows you to populate just a discreet set of values
+    populateTestData(): void {
+        this.customerForm.setValue({
+            firstName: 'Jack',
+            lastName: 'Jumbolaya',
+            email: 'jackssnatch@gmail.com',
+            sendCatalog: false
+        });
+    }
+    populateTestData2(): void {
+        this.customerForm.patchValue({
+            firstName: 'bugger',
+            lastName: 'all',
+            email: this.customerForm.get('email').value
+        });
+    }
+    save(): void {
+        console.log(this.customerForm);
+        console.log('Saved: ' + JSON.stringify(this.customerForm.value));
+    }
  }
