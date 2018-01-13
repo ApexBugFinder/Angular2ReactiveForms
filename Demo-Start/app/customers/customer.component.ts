@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer, Inject } from '@angular/core';
 // Importing NgForm is not needed when creating a reactive form
 // import { NgForm } from '@angular/forms';
 
@@ -7,30 +7,42 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Customer } from './customer';
+import { DISABLED } from '@angular/forms/src/model';
+import { Validators } from '@angular/forms/src/validators';
 
 @Component({
     selector: 'my-signup',
     templateUrl: './app/customers/customer.component.html'
 })
-export class CustomerComponent implements OnInit  {
+export class CustomerComponent implements OnInit{
+    
+    
     // Define the customerForm property as a class of FormGroup but use the lifecylce hook OnInit
     // to insure that the customerForm in instantiated before the page loads
     customerForm: FormGroup;
     customer: Customer= new Customer();
     counter: number;
-    constructor(private fb: FormBuilder) {}
+    showMe: boolean;
+    
+    constructor(private fb: FormBuilder, @Inject(ElementRef) private element: ElementRef, private renderer: Renderer) {}
 
     ngOnInit(): void {
 
         // Reactive Forms Using FormBuilder
+        this.showMe = false;
         this.customerForm = this.fb.group({
             firstName: '',
-            lastName: '',
+            // Alternative Syntax for formbuilder, you can use an object with keyvalue pairs 
+            // to define the controls of the lastName field
+            // value is going to be n/a and the field will be disabled
+            lastName: {value: 'n/a', disabled: !this.showMe},
             email: '',
-            sendCatalog: true
+            sendCatalog: true,
+            showMe: false
         });
         this.counter = 0;
 
+        
         // Reactive Forms Using FormGroup
 
         // this.customerForm = new FormGroup({
@@ -76,5 +88,20 @@ export class CustomerComponent implements OnInit  {
         });
         console.log('Updated: ' + JSON.stringify(this.customerForm.value));
     }
-
+    
+    // experimenting with disable and enable and patchValue
+    updateLastName(): void {
+        if ( this.customerForm.get('firstName').touched === true) {
+            let may: string = this.customerForm.get('firstName').value;
+            may = may.toLowerCase();
+            this.customerForm.get('lastName').enable();
+            if (may === 'orville'){
+                this.customerForm.patchValue({
+                lastName: 'Hello Pumpkin'
+            });
+            this.showMe = true;
+        } else {
+            return;
+        }
+    }
  }

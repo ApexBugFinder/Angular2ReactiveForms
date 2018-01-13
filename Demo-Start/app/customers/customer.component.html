@@ -22,6 +22,7 @@
                                placeholder="First Name (required)" 
                                required 
                                minlength="3"
+                               (blur)="updateLastName(customerForm.value)"
                                formControlName="firstName" /> 
                         <span class="help-block" *ngIf="(customerForm.get('firstName').touched || customerForm.get('firstName').dirty) && customerForm.get('firstName').errors">
                             <span *ngIf="customerForm.get('firstName').errors.required">
@@ -40,14 +41,18 @@
                         for="lastNameId">Last Name</label>
 
                     <div class="col-md-8">
+                        
                         <input class="form-control" 
                                id="lastNameId" 
                                type="text" 
                                placeholder="Last Name (required)" 
                                required 
                                maxlength="50"
-                               formControlName="lastName"/>
-                        <span class="help-block" *ngIf="(customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && customerForm.get('lastName').errors">
+                               formControlName="lastName"
+                                />
+                        <span class="help-block" 
+                                
+                                *ngIf="(customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && customerForm.get('lastName').errors">
                             <span *ngIf="customerForm.get('lastName').errors.required">
                                 Please enter your last name.
                             </span>
@@ -225,3 +230,4 @@
 <br>Touched: {{ customerForm.touched }}
 <br>Valid: {{ customerForm.valid }}
 <br>Value: {{ customerForm.value | json }}
+<br>Show Me: {{ showMe }}
