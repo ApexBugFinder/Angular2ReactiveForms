@@ -3,7 +3,8 @@ import { Component, OnInit } from '@angular/core';
 // import { NgForm } from '@angular/forms';
 
 // Import Angular Reactive Forms Building Blocks FormGroup and FormControl from angular forms
-import { FormControl, FormGroup } from '@angular/forms';
+// Import FormBuilder to use it to build a formGroup with less code
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Customer } from './customer';
 
@@ -17,16 +18,29 @@ export class CustomerComponent implements OnInit  {
     customerForm: FormGroup;
     customer: Customer= new Customer();
 
-    ngOnInit(): void {
-        this.customerForm = new FormGroup({
-            // This is the Form Model not to be confused with the data model
-            // Define form fields and pass in the default values in to the new instance of the FormControl
-            firstName: new FormControl(),
-            lastName: new FormControl(),
-            email: new FormControl(),
-            sendCatalog: new FormControl(true)
+    constructor(private fb: FormBuilder) {}
 
+    ngOnInit(): void {
+
+        // Reactive Forms Using FormBuilder
+        this.customerForm = this.fb.group({
+            firstName: '',
+            lastName: '',
+            email: '',
+            sendCatalog: true
         });
+
+        // Reactive Forms Using FormGroup
+
+        // this.customerForm = new FormGroup({
+        //     // This is the Form Model not to be confused with the data model
+        //     // Define form fields and pass in the default values in to the new instance of the FormControl
+        //     firstName: new FormControl(),
+        //     lastName: new FormControl(),
+        //     email: new FormControl(),
+        //     sendCatalog: new FormControl(true)
+
+        // });
     }
     // Old save method used angular forms
     // save(customerForm: NgForm) {
