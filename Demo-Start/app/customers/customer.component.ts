@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+// Importing NgForm is not needed when creating a reactive form
+// import { NgForm } from '@angular/forms';
+
 
 import { Customer } from './customer';
 
@@ -10,8 +12,11 @@ import { Customer } from './customer';
 export class CustomerComponent  {
     customer: Customer= new Customer();
 
-    save(customerForm: NgForm) {
-        console.log(customerForm.form);
-        console.log('Saved: ' + JSON.stringify(customerForm.value));
-    }
+    // Old save method used angular forms
+    // save(customerForm: NgForm) {
+    //     console.log(customerForm.form);
+    //     console.log('Saved: ' + JSON.stringify(customerForm.value));
+    // }
+
+
  }
