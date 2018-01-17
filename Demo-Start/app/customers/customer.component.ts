@@ -37,6 +37,8 @@ export class CustomerComponent implements OnInit{
             lastName: ['n/a', [Validators.required, Validators.maxLength(50)]],
             email: ['', [Validators.required,Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
             sendCatalog: true,
+            phone: '',
+            notification: 'email',
             showMe: false
         });
         this.counter = 0;
@@ -103,5 +105,18 @@ export class CustomerComponent implements OnInit{
             return;
         }
     }
+ }
+ setNotification(notifyVia: string): void {
+    const phoneControl = this.customerForm.get('phone');
+    if (notifyVia === 'text') {
+
+        // You can pass in an array of validators also
+        phoneControl.setValidators(Validators.required);   
+    } else {
+        phoneControl.clearValidators();
+    }
+
+        // Update Validators
+    phoneControl.updateValueAndValidity();
  }
 }
