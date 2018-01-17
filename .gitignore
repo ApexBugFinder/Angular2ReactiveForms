@@ -1,3 +1,4 @@
+
 typings
 **/app/**/*.js
 **/app/**/*.map
@@ -14,3 +15,7 @@ bower_components
 bin
 obj
 packages
+
+Demo-Start/package.json
+Demo-Start/package-lock.json
+Demo-Start/bs-config.json
