@@ -1,0 +1,6 @@
+{
+    "port": 8000,
+    "files": ["./**/*.{html,htm,css,js}"],
+    "server": { "baseDir": "./" },
+    "browser": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\Chrome.exe"
+  }
