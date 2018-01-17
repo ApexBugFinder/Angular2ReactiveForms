@@ -4,11 +4,10 @@ import { Component, OnInit, ElementRef, Renderer, Inject } from '@angular/core';
 
 // Import Angular Reactive Forms Building Blocks FormGroup and FormControl from angular forms
 // Import FormBuilder to use it to build a formGroup with less code
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { Customer } from './customer';
 import { DISABLED } from '@angular/forms/src/model';
-import { Validators } from '@angular/forms/src/validators';
 
 @Component({
     selector: 'my-signup',
@@ -31,12 +30,12 @@ export class CustomerComponent implements OnInit{
         // Reactive Forms Using FormBuilder
         this.showMe = false;
         this.customerForm = this.fb.group({
-            firstName: '',
+            firstName: ['',[Validators.required, Validators.minLength(3)]],
             // Alternative Syntax for formbuilder, you can use an object with keyvalue pairs 
             // to define the controls of the lastName field
             // value is going to be n/a and the field will be disabled
-            lastName: {value: 'n/a', disabled: !this.showMe},
-            email: '',
+            lastName: ['n/a', [Validators.required, Validators.maxLength(50)]],
+            email: ['', [Validators.required,Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
             sendCatalog: true,
             showMe: false
         });

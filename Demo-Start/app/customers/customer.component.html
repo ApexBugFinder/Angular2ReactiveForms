@@ -20,8 +20,6 @@
                                id="firstNameId" 
                                type="text" 
                                placeholder="First Name (required)" 
-                               required 
-                               minlength="3"
                                (blur)="updateLastName(customerForm.value)"
                                formControlName="firstName" /> 
                         <span class="help-block" *ngIf="(customerForm.get('firstName').touched || customerForm.get('firstName').dirty) && customerForm.get('firstName').errors">
@@ -46,8 +44,6 @@
                                id="lastNameId" 
                                type="text" 
                                placeholder="Last Name (required)" 
-                               required 
-                               maxlength="50"
                                formControlName="lastName"
                                 />
                         <span class="help-block" 
