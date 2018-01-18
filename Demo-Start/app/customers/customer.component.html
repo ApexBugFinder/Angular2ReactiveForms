@@ -10,15 +10,15 @@
               (ngSubmit)="save()"
               [formGroup]="customerForm">
             <fieldset>
-                <div class="form-group" style=" vertical-align: bottom; text-align:left;"
+                <div class="form-group" style=" vertical-align: top; text-align:left;"
                     [ngClass]="{'has-error': (customerForm.get('firstName').touched || customerForm.get('firstName').dirty) && !customerForm.get('firstName').valid }">
-                    <div class="container col-md-4 " style="display:inline-block;">
+                    <div class="container col-md-4 " style="display:inline-block; text-align:left">
                         <label class=" control-label" 
                            for="firstNameId"
                            style="float: left; text-align: left; display:inline-block;">First Name</label>
                     </div>
                     <!-- Using new formControl references -->
-                    <div class="col-md-7" style="display:inline-block">
+                    <div class="col-md-7" style="display:inline-block;text-align:left">
                         <input class="form-control" 
                                id="firstNameId" 
                                type="text" 
@@ -120,6 +120,30 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('rating').touched ||
+                                                customerForm.get('rating').dirty) &&
+                                                !customerForm.get('rating').valid }">
+                        <label for="ratingId" class="md-col-2 control-label">
+                            Rating
+                        </label>
+                        <div class="md-col-8">
+                            <input type="number" 
+                                id="ratingId" 
+                                formControlName="rating"
+                                class="form-control"/>
+                            <span class="help-block" *ngIf="(customerForm.get('rating').touched ||
+                                        customerForm.get('rating').dirty) && 
+                                        customerForm.get('rating').errors">
+                                <span *ngIf="customerForm.get('rating').errors.range">
+                                    Please rate your experience between 1 and 5.
+                                </span>
+                            </span>
+                        </div>
+
+                </div>
+
                 <div class="form-group">
                     <div class="col-md-offset-1 col-md-8 checkbox" >
                         <label>

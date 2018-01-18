@@ -4,18 +4,27 @@ import { Component, OnInit, ElementRef, Renderer, Inject } from '@angular/core';
 
 // Import Angular Reactive Forms Building Blocks FormGroup and FormControl from angular forms
 // Import FormBuilder to use it to build a formGroup with less code
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 
 import { Customer } from './customer';
-import { DISABLED } from '@angular/forms/src/model';
+import { DISABLED, AbstractControl } from '@angular/forms/src/model';
 
+// Custom validator using a Validator Function Factory
+// Custom validator takes a max and min parameters for the rating range
+function ratingRange(min: number, max: number): ValidatorFn {
+    return (c: AbstractControl): {[key: string]: boolean} | null => {
+    if (c.value !== undefined &&  (isNaN(c.value) || c.value < min || c.value > max )) {
+        return {'range': true};
+    } else {
+        return null;
+    }
+}
+}
 @Component({
     selector: 'my-signup',
     templateUrl: './app/customers/customer.component.html'
 })
-export class CustomerComponent implements OnInit{
-    
-    
+export class CustomerComponent implements OnInit {
     // Define the customerForm property as a class of FormGroup but use the lifecylce hook OnInit
     // to insure that the customerForm in instantiated before the page loads
     customerForm: FormGroup;
@@ -39,6 +48,9 @@ export class CustomerComponent implements OnInit{
             sendCatalog: true,
             phone: '',
             notification: 'email',
+            // Uses the ratingRange validator function created by the validator function factory 
+            // ratingRange takes the max and min parameters
+            rating: ['', ratingRange(1, 5)],
             showMe: false
         });
         this.counter = 0;
@@ -111,7 +123,7 @@ export class CustomerComponent implements OnInit{
     if (notifyVia === 'text') {
 
         // You can pass in an array of validators also
-        phoneControl.setValidators(Validators.required);   
+        phoneControl.setValidators(Validators.required);
     } else {
         phoneControl.clearValidators();
     }
@@ -119,4 +131,8 @@ export class CustomerComponent implements OnInit{
         // Update Validators
     phoneControl.updateValueAndValidity();
  }
+
+ // Building a custom validator
+
+
 }
