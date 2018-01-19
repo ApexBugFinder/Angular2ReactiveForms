@@ -20,6 +20,9 @@ function ratingRange(min: number, max: number): ValidatorFn {
         }
     };
 }
+
+
+ // Building a custom validator to evaluate the email and the confirmation email address
 function emailMatcher(c: AbstractControl): {[key: string]: boolean} | null {
     let emailControl = c.get('email');
     let confirmEmailControl = c.get('confirmEmail');
@@ -68,6 +71,12 @@ export class CustomerComponent implements OnInit {
             rating: ['', ratingRange(1, 5)],
             showMe: false
         });
+
+        // Method does the same as the setNotification method but instead of doing
+        // it through event binding it uses an observable to watch the valueChanges property
+        // of the notification radio button group
+        this.customerForm.get('notification').valueChanges
+                .subscribe(value => console.log(value));
         this.counter = 0;
 
         
@@ -133,6 +142,9 @@ export class CustomerComponent implements OnInit {
         }
     }
  }
+
+ // Method changes the validations dynamically at runtime on the phone input box 
+ // based upon whether the user has selected the radio button email or text via event binding
  setNotification(notifyVia: string): void {
     const phoneControl = this.customerForm.get('phone');
     if (notifyVia === 'text') {
@@ -147,7 +159,10 @@ export class CustomerComponent implements OnInit {
     phoneControl.updateValueAndValidity();
  }
 
- // Building a custom validator
+
+
+
+
 
 
 }
