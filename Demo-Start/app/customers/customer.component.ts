@@ -4,25 +4,46 @@ import { Component, OnInit, ElementRef, Renderer, Inject } from '@angular/core';
 
 // Import Angular Reactive Forms Building Blocks FormGroup and FormControl from angular forms
 // Import FormBuilder to use it to build a formGroup with less code
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 
 import { Customer } from './customer';
-import { DISABLED } from '@angular/forms/src/model';
+import { DISABLED, AbstractControl } from '@angular/forms/src/model';
+
+// Custom validator using a Validator Function Factory
+// Custom validator takes a max and min parameters for the rating range
+function ratingRange(min: number, max: number): ValidatorFn {
+        return (c: AbstractControl): {[key: string]: boolean} | null => {
+        if (c.value !== undefined &&  (isNaN(c.value) || c.value < min || c.value > max )) {
+            return {'range': true};
+        } else {
+            return null;
+        }
+    };
+}
+function emailMatcher(c: AbstractControl): {[key: string]: boolean} | null {
+    let emailControl = c.get('email');
+    let confirmEmailControl = c.get('confirmEmail');
+    if (emailControl.pristine || confirmEmailControl.pristine) {
+        return null;
+    }
+    if (emailControl.value === confirmEmailControl.value) {
+        return null;
+    }
+    return { 'match': true };
+}
 
 @Component({
     selector: 'my-signup',
     templateUrl: './app/customers/customer.component.html'
 })
-export class CustomerComponent implements OnInit{
-    
-    
+export class CustomerComponent implements OnInit {
     // Define the customerForm property as a class of FormGroup but use the lifecylce hook OnInit
     // to insure that the customerForm in instantiated before the page loads
     customerForm: FormGroup;
     customer: Customer= new Customer();
     counter: number;
     showMe: boolean;
-    
+
     constructor(private fb: FormBuilder, @Inject(ElementRef) private element: ElementRef, private renderer: Renderer) {}
 
     ngOnInit(): void {
@@ -30,13 +51,21 @@ export class CustomerComponent implements OnInit{
         // Reactive Forms Using FormBuilder
         this.showMe = false;
         this.customerForm = this.fb.group({
-            firstName: ['',[Validators.required, Validators.minLength(3)]],
+            firstName: ['', [Validators.required, Validators.minLength(3)]],
             // Alternative Syntax for formbuilder, you can use an object with keyvalue pairs 
             // to define the controls of the lastName field
             // value is going to be n/a and the field will be disabled
             lastName: ['n/a', [Validators.required, Validators.maxLength(50)]],
-            email: ['', [Validators.required,Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
+            emailGroup: this.fb.group({
+                email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
+                confirmEmail: ['hi', Validators.required],
+            }, {validator: emailMatcher} ),
             sendCatalog: true,
+            phone: '',
+            notification: 'email',
+            // Uses the ratingRange validator function created by the validator function factory 
+            // ratingRange takes the max and min parameters
+            rating: ['', ratingRange(1, 5)],
             showMe: false
         });
         this.counter = 0;
@@ -104,4 +133,21 @@ export class CustomerComponent implements OnInit{
         }
     }
  }
+ setNotification(notifyVia: string): void {
+    const phoneControl = this.customerForm.get('phone');
+    if (notifyVia === 'text') {
+
+        // You can pass in an array of validators also
+        phoneControl.setValidators(Validators.required);
+    } else {
+        phoneControl.clearValidators();
+    }
+
+        // Update Validators
+    phoneControl.updateValueAndValidity();
+ }
+
+ // Building a custom validator
+
+
 }

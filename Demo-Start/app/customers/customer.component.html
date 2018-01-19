@@ -1,6 +1,6 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Sign Up!
+        <h2>Sign Up!</h2>
     </div>
 
     <div class="panel-body">
@@ -10,12 +10,15 @@
               (ngSubmit)="save()"
               [formGroup]="customerForm">
             <fieldset>
-                <div class="form-group"
+                <div class="form-group" style=" vertical-align: top; text-align:left;"
                     [ngClass]="{'has-error': (customerForm.get('firstName').touched || customerForm.get('firstName').dirty) && !customerForm.get('firstName').valid }">
-                    <label class="col-md-2 control-label" 
-                           for="firstNameId">First Name</label>
+                    <div class="container col-md-4 " style="display:inline-block; text-align:left">
+                        <label class=" control-label" 
+                           for="firstNameId"
+                           style="text-align: left; display:inline-block;">First Name</label>
+                    </div>
                     <!-- Using new formControl references -->
-                    <div class="col-md-8">
+                    <div class="col-md-7" style="display:inline-block;text-align:left">
                         <input class="form-control" 
                                id="firstNameId" 
                                type="text" 
@@ -35,7 +38,7 @@
 
                 <div class="form-group"
                     [ngClass]="{'has-error': (customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && !customerForm.get('lastName').valid }">
-                    <label class="col-md-2 control-label" 
+                    <label class="col-md-4 control-label" style="float: left; text-align: left"
                         for="lastNameId">Last Name</label>
 
                     <div class="col-md-8">
@@ -56,33 +59,92 @@
                     </div>
                 </div>
 
-                <div class="form-group"
-                    [ngClass]="{'has-error': (customerForm.get('email').touched || customerForm.get('email').dirty) && !customerForm.get('email').valid }">
-                    <label class="col-md-2 control-label" 
-                        for="emailId">Email</label>
-
-                    <div class="col-md-8">
-                        <input class="form-control" 
-                               id="emailId" 
-                               type="email" 
-                               placeholder="Email (required)" 
-                               required
-                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+"
-                               formControlName="email"/>
-                        <span class="help-block" *ngIf="(customerForm.get('email').touched || customerForm.get('email').dirty) && customerForm.get('email').errors">
-                            <span *ngIf="customerForm.get('email').errors.required">
-                                Please enter your email address.
+                
+                <div formGroupName="emailGroup"
+                    [ngClass]="{'has-error': customerForm.get('emailGroup').errors}">
+                        <div class="form-group"
+                        [ngClass]="{'has-error': (customerForm.get('emailGroup.email').touched || customerForm.get('emailGroup.email').dirty) && !customerForm.get('emailGroup.email').valid }">
+                        <label class="col-md-2 control-label" 
+                            for="emailId">Email</label>
+    
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                   id="emailId" 
+                                   type="email" 
+                                   placeholder="Email (required)" 
+                                   
+                                   formControlName="email"/>
+                            <span class="help-block" *ngIf="(customerForm.get('emailGroup.email').touched || 
+                            customerForm.get('emailGroup.email').dirty) && 
+                            customerForm.get('emailGroup.email').errors">
+                                <span *ngIf="customerForm.get('emailGroup.email').errors?.required">
+                                    Please enter your email address.
+                                </span>
+                                <span *ngIf="customerForm.get('emailGroup.email').errors?.pattern">
+                                    Please enter a valid email address.
+                                </span>
+    
+                                <!-- This one does not work -->
+                                <!-- <span *ngIf="customerForm.get('email').errors.email">
+                                    Please enter a valid email address.
+                                </span> -->
                             </span>
-                            <span *ngIf="customerForm.get('email').errors.pattern">
-                                Please enter a valid email address.
-                            </span>
-
-                            <!-- This one does not work -->
-                            <span *ngIf="customerForm.get('email').errors.email">
-                                Please enter a valid email address.
-                            </span>
-                        </span>
+                        </div>
+    
                     </div>
+                    <div class="form-group"
+                    [ngClass]="{'has-error': customerForm.get('emailGroup.confirmEmail').touched ||
+                                    customerForm.get('emailGroup.confirmEmail').dirty && 
+                                    !customerForm.get('emailGroup.confirmEmail').valid }">
+                            <label for="confirmEmailId" class="col-md-2 control-label">
+                                Confirm Email
+                            </label>
+                            <div class="col-md-8">
+                                <input class="form-control"
+                                id="confirmEmailId"
+                                type="email"
+                                placeholder="Confirm Email (required)"
+                                formControlName="confirmEmail" 
+                                >
+                                <span class="help-block" *ngIf="(customerForm.get('emailGroup.confirmEmail').touched || 
+                                            customerForm.get('emailGroup.confirmEmail').dirty) &&
+                                            (customerForm.get('emailGroup.confirmEmail').errors ||
+                                            customerForm.get('emailGroup').errors)">
+                                        <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
+                                            Please confirm your email address
+                                        </span>
+                                        <span *ngIf="customerForm.get('emailGroup').errors?.match">
+                                            Confirmation does not match the email address.
+                                        </span>
+                                </span>
+                            </div>
+
+                    </div>
+                </div>
+               
+
+              
+
+                
+                <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('rating').touched ||
+                                                customerForm.get('rating').dirty) &&
+                                                !customerForm.get('rating').valid }">
+                        <label for="ratingId" class="col-md-2 control-label">Rating</label>
+                        <div class="col-md-8">
+                            <input type="number" 
+                                id="ratingId" 
+                                formControlName="rating"
+                                class="form-control"/>
+                            <span class="help-block" *ngIf="(customerForm.get('rating').touched ||
+                                        customerForm.get('rating').dirty) && 
+                                        customerForm.get('rating').errors">
+                                <span *ngIf="customerForm.get('rating').errors.range">
+                                    Please rate your experience between 1 and 5.
+                                </span>
+                            </span>
+                        </div>
+
                 </div>
 
                 <div class="form-group">
