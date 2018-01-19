@@ -12,14 +12,26 @@ import { DISABLED, AbstractControl } from '@angular/forms/src/model';
 // Custom validator using a Validator Function Factory
 // Custom validator takes a max and min parameters for the rating range
 function ratingRange(min: number, max: number): ValidatorFn {
-    return (c: AbstractControl): {[key: string]: boolean} | null => {
-    if (c.value !== undefined &&  (isNaN(c.value) || c.value < min || c.value > max )) {
-        return {'range': true};
-    } else {
+        return (c: AbstractControl): {[key: string]: boolean} | null => {
+        if (c.value !== undefined &&  (isNaN(c.value) || c.value < min || c.value > max )) {
+            return {'range': true};
+        } else {
+            return null;
+        }
+    };
+}
+function emailMatcher(c: AbstractControl): {[key: string]: boolean} | null {
+    let emailControl = c.get('email');
+    let confirmEmailControl = c.get('confirmEmail');
+    if (emailControl.pristine || confirmEmailControl.pristine) {
         return null;
     }
+    if (emailControl.value === confirmEmailControl.value) {
+        return null;
+    }
+    return { 'match': true };
 }
-}
+
 @Component({
     selector: 'my-signup',
     templateUrl: './app/customers/customer.component.html'
@@ -31,7 +43,7 @@ export class CustomerComponent implements OnInit {
     customer: Customer= new Customer();
     counter: number;
     showMe: boolean;
-    
+
     constructor(private fb: FormBuilder, @Inject(ElementRef) private element: ElementRef, private renderer: Renderer) {}
 
     ngOnInit(): void {
@@ -39,12 +51,15 @@ export class CustomerComponent implements OnInit {
         // Reactive Forms Using FormBuilder
         this.showMe = false;
         this.customerForm = this.fb.group({
-            firstName: ['',[Validators.required, Validators.minLength(3)]],
+            firstName: ['', [Validators.required, Validators.minLength(3)]],
             // Alternative Syntax for formbuilder, you can use an object with keyvalue pairs 
             // to define the controls of the lastName field
             // value is going to be n/a and the field will be disabled
             lastName: ['n/a', [Validators.required, Validators.maxLength(50)]],
-            email: ['', [Validators.required,Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
+            emailGroup: this.fb.group({
+                email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
+                confirmEmail: ['hi', Validators.required],
+            }, {validator: emailMatcher} ),
             sendCatalog: true,
             phone: '',
             notification: 'email',
