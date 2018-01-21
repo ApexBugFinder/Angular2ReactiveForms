@@ -10,15 +10,15 @@
               (ngSubmit)="save()"
               [formGroup]="customerForm">
             <fieldset>
-                <div class="form-group" style=" vertical-align: top; text-align:left;"
+                <div class="form-group" style=" vertical-align: top; "
                     [ngClass]="{'has-error': (customerForm.get('firstName').touched || customerForm.get('firstName').dirty) && !customerForm.get('firstName').valid }">
-                    <div class="container col-md-4 " style="display:inline-block; text-align:left">
+                    <div class="container col-md-2" style="display:inline-block;text-align: right;">
                         <label class=" control-label" 
                            for="firstNameId"
-                           style="text-align: left; display:inline-block;">First Name</label>
+                            >First Name</label>
                     </div>
                     <!-- Using new formControl references -->
-                    <div class="col-md-7" style="display:inline-block;text-align:left">
+                    <div class="col-md-8" style="display:inline-block;text-align:left">
                         <input class="form-control" 
                                id="firstNameId" 
                                type="text" 
@@ -38,7 +38,7 @@
 
                 <div class="form-group"
                     [ngClass]="{'has-error': (customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && !customerForm.get('lastName').valid }">
-                    <label class="col-md-4 control-label" style="float: left; text-align: left"
+                    <label class="col-md-2 control-label" style="float: left; text-align: right"
                         for="lastNameId">Last Name</label>
 
                     <div class="col-md-8">
@@ -61,9 +61,9 @@
 
                 
                 <div formGroupName="emailGroup"
-                    [ngClass]="{'has-error': customerForm.get('emailGroup').errors}">
+                    [ngClass]="{'has-error': customerForm.get('emailGroup').errors }">
                         <div class="form-group"
-                        [ngClass]="{'has-error': (customerForm.get('emailGroup.email').touched || customerForm.get('emailGroup.email').dirty) && !customerForm.get('emailGroup.email').valid }">
+                        [ngClass]="{'has-error': emailMessage }">
                         <label class="col-md-2 control-label" 
                             for="emailId">Email</label>
     
@@ -74,28 +74,14 @@
                                    placeholder="Email (required)" 
                                    
                                    formControlName="email"/>
-                            <span class="help-block" *ngIf="(customerForm.get('emailGroup.email').touched || 
-                            customerForm.get('emailGroup.email').dirty) && 
-                            customerForm.get('emailGroup.email').errors">
-                                <span *ngIf="customerForm.get('emailGroup.email').errors?.required">
-                                    Please enter your email address.
-                                </span>
-                                <span *ngIf="customerForm.get('emailGroup.email').errors?.pattern">
-                                    Please enter a valid email address.
-                                </span>
-    
-                                <!-- This one does not work -->
-                                <!-- <span *ngIf="customerForm.get('email').errors.email">
-                                    Please enter a valid email address.
-                                </span> -->
+                            <span class="help-block" *ngIf="emailMessage">
+                                    {{ emailMessage }}
                             </span>
                         </div>
     
                     </div>
                     <div class="form-group"
-                    [ngClass]="{'has-error': customerForm.get('emailGroup.confirmEmail').touched ||
-                                    customerForm.get('emailGroup.confirmEmail').dirty && 
-                                    !customerForm.get('emailGroup.confirmEmail').valid }">
+                    [ngClass]="{'has-error': confirmationEmailMessage }">
                             <label for="confirmEmailId" class="col-md-2 control-label">
                                 Confirm Email
                             </label>
@@ -104,18 +90,13 @@
                                 id="confirmEmailId"
                                 type="email"
                                 placeholder="Confirm Email (required)"
-                                formControlName="confirmEmail" 
-                                >
-                                <span class="help-block" *ngIf="(customerForm.get('emailGroup.confirmEmail').touched || 
-                                            customerForm.get('emailGroup.confirmEmail').dirty) &&
-                                            (customerForm.get('emailGroup.confirmEmail').errors ||
-                                            customerForm.get('emailGroup').errors)">
-                                        <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
-                                            Please confirm your email address
-                                        </span>
-                                        <span *ngIf="customerForm.get('emailGroup').errors?.match">
-                                            Confirmation does not match the email address.
-                                        </span>
+                                formControlName="confirmEmail" />
+                                <span class="help-block" *ngIf="confirmationEmailMessage">
+                                    {{ confirmationEmailMessage }}
+                                    <span *ngIf="customerForm.get('emailGroup').errors.emptyInput" 
+                                    (click)="verifyErrorMessages(confirmationEmailMessage)">
+                                        Empty Inspection 
+                                    </span>
                                 </span>
                             </div>
 

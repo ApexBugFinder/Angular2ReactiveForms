@@ -4,11 +4,15 @@ import { Component, OnInit, ElementRef, Renderer, Inject } from '@angular/core';
 
 // Import Angular Reactive Forms Building Blocks FormGroup and FormControl from angular forms
 // Import FormBuilder to use it to build a formGroup with less code
-import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
+
+// import { FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder,
+        Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 import { Customer } from './customer';
-import { DISABLED, AbstractControl } from '@angular/forms/src/model';
+import 'rxjs/add/operator/debounceTime';
 
+// import { DISABLED } from '@angular/forms';
 // Custom validator using a Validator Function Factory
 // Custom validator takes a max and min parameters for the rating range
 function ratingRange(min: number, max: number): ValidatorFn {
@@ -24,14 +28,27 @@ function ratingRange(min: number, max: number): ValidatorFn {
 
  // Building a custom validator to evaluate the email and the confirmation email address
 function emailMatcher(c: AbstractControl): {[key: string]: boolean} | null {
+
     let emailControl = c.get('email');
+    console.log('emailMatcher emailCtrl value: ' + emailControl.value);
+
     let confirmEmailControl = c.get('confirmEmail');
+    console.log('emailMatcher confirmCtrl value: ' + confirmEmailControl.value);
+
+    console.log('emailCtrl valid: ' + emailControl.valid);
+    console.log('confirmCtrl valid: ' + confirmEmailControl.valid);
     if (emailControl.pristine || confirmEmailControl.pristine) {
         return null;
     }
     if (emailControl.value === confirmEmailControl.value) {
         return null;
     }
+    if (emailControl.valid && (confirmEmailControl.dirty && confirmEmailControl.value === '')) {
+        console.log('ln47 emailMatcher emptyInput: ' + true);
+        let answer: {[key: string]: boolean} = {'emptyInput': true};
+        return answer;
+    }
+    console.log('match: ' + true);
     return { 'match': true };
 }
 
@@ -46,7 +63,21 @@ export class CustomerComponent implements OnInit {
     customer: Customer= new Customer();
     counter: number;
     showMe: boolean;
+    emailMessage: string;
+    confirmationEmailMessage: string = '';
 
+    private validationMessages = {
+        required: 'Please enter your email address',
+        pattern: 'Please enter a valid email address',
+        match: 'Confirmation email does not match email address',
+    };
+
+    private confirmationValidationMessages = {
+        required: 'Please enter your email address',
+        pattern: 'Please enter a valid email address',
+        match: 'Confirmation email does not match your email address',
+        emptyInput: 'Please enter a confirmation email'
+    };
     constructor(private fb: FormBuilder, @Inject(ElementRef) private element: ElementRef, private renderer: Renderer) {}
 
     ngOnInit(): void {
@@ -61,7 +92,7 @@ export class CustomerComponent implements OnInit {
             lastName: ['n/a', [Validators.required, Validators.maxLength(50)]],
             emailGroup: this.fb.group({
                 email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
-                confirmEmail: ['hi', Validators.required],
+                confirmEmail: ['', Validators.required],
             }, {validator: emailMatcher} ),
             sendCatalog: true,
             phone: '',
@@ -79,7 +110,15 @@ export class CustomerComponent implements OnInit {
                 .subscribe(value => console.log(value));
         this.counter = 0;
 
-        
+        const emailControl = this.customerForm.get('emailGroup.email');
+        emailControl.valueChanges.debounceTime(1000).subscribe(value => this.setMessage(emailControl));
+
+        const emailGroupControl = this.customerForm.get('emailGroup');
+        const confirmationEmailControl = this.customerForm.get('emailGroup.confirmEmail');
+        confirmationEmailControl.valueChanges.subscribe(value => {
+                                    console.log(value);
+                                    this.setConfirmationMessage(confirmationEmailControl, emailGroupControl);
+                                });
         // Reactive Forms Using FormGroup
 
         // this.customerForm = new FormGroup({
@@ -125,14 +164,14 @@ export class CustomerComponent implements OnInit {
         });
         console.log('Updated: ' + JSON.stringify(this.customerForm.value));
     }
-    
+
     // experimenting with disable and enable and patchValue
     updateLastName(): void {
         if ( this.customerForm.get('firstName').touched === true) {
             let may: string = this.customerForm.get('firstName').value;
             may = may.toLowerCase();
             this.customerForm.get('lastName').enable();
-            if (may === 'orville'){
+            if (may === 'orville') {
                 this.customerForm.patchValue({
                 lastName: 'Hello Pumpkin'
             });
@@ -159,8 +198,48 @@ export class CustomerComponent implements OnInit {
     phoneControl.updateValueAndValidity();
  }
 
+setMessage(b: AbstractControl): void {
+    this.emailMessage = '';
+    console.log('errors: ' + JSON.stringify(b.errors));
+    if ((b.touched || b.dirty) && b.errors) {
+        this.emailMessage = Object.keys(b.errors)
+            .map(key => this.validationMessages[key]).join(' ');
+    }
+}
 
+setConfirmationMessage(confirmCtrl: AbstractControl, emailGrpCtrl: AbstractControl): void {
+    this.confirmationEmailMessage = '';
 
+    console.log('value: ' + confirmCtrl.value);
+    console.log('touched: ' + confirmCtrl.touched);
+    console.log('dirty: ' + confirmCtrl.dirty);
+    console.log('possible confirmationValidationMessage: ' + JSON.stringify(this.confirmationValidationMessages));
+    console.log('errors: ' + JSON.stringify(emailGrpCtrl.errors));
+    if ((confirmCtrl.touched || confirmCtrl.dirty) &&
+        (emailGrpCtrl.errors || confirmCtrl.errors)) {
+        console.log('lucky');
+        Object.keys(emailGrpCtrl.errors).forEach(key => console.log('setConfirmation ln221: ' + key));
+        this.confirmationEmailMessage = Object.keys(emailGrpCtrl.errors)
+            .map(key => this.validationMessages[key])
+            .join(' ');
+            console.log('set these messages: ' + JSON.stringify(this.confirmationEmailMessage));
+    }  if (emailGrpCtrl.errors && confirmCtrl.value === '') {
+        console.log('hi emptyInput Ln227');
+            this.confirmationEmailMessage = this.confirmationValidationMessages['emptyInput'];
+    }   if (emailGrpCtrl === null) {
+        console.log('bad Abstract Controller');
+    }
+    console.log('poop');
+}
+
+verifyErrorMessages(msg: any): void {
+    let emailGrpCtrl = this.customerForm.get('emailGroup');
+    if ( emailGrpCtrl.errors.emptyInput ) {
+        this.confirmationEmailMessage = 'Got a chance';
+    }
+    console.log('Verification Method Ln233: <br/>');
+    console.log(JSON.stringify(msg));
+}
 
 
 
