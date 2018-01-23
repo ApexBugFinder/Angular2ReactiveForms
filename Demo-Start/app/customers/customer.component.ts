@@ -99,14 +99,7 @@ export class CustomerComponent implements OnInit {
             }, {validator: emailMatcher} ),
             sendCatalog: true,
             phone: '',
-            addressBlockGroup: this.fb.group({
-                addressType: 'home',
-                street1: '',
-                street2: '',
-                city: '',
-                state: '',
-                zip: '',
-            }),
+            addressBlockGroup: this.buildAddress(),
             notification: 'email',
             // Uses the ratingRange validator function created by the validator function factory 
             // ratingRange takes the max and min parameters
@@ -251,16 +244,27 @@ setConfirmationMessage(confirmCtrl: AbstractControl, emailGrpCtrl: AbstractContr
     console.log('poop');
 }
 
-verifyErrorMessages(msg: any): void {
-    let emailGrpCtrl = this.customerForm.get('emailGroup');
-    // if ( emailGrpCtrl.errors.emptyInput ) {
-    //     this.confirmationEmailMessage = 'Got a chance';
-    // }
-    console.log('Verification Method Ln233: <br/>');
-    console.log(JSON.stringify(msg));
+// Unnecessary code used to verify the error codes and messages of the emailGroup
+// verifyErrorMessages(msg: any): void {
+//     let emailGrpCtrl = this.customerForm.get('emailGroup');
+//     // if ( emailGrpCtrl.errors.emptyInput ) {
+//     //     this.confirmationEmailMessage = 'Got a chance';
+//     // }
+//     console.log('Verification Method Ln233: <br/>');
+//     console.log(JSON.stringify(msg));
+// }
+
+// Create a FormGroup for duplication of elements and call it to declare and instance of the formGroup
+buildAddress(): FormGroup {
+    return this.fb.group ({
+        addressType: 'home',
+        street1: '',
+        street2: '',
+        city: '',
+        state: '',
+        zip: ''
+    });
 }
-
-
 
 
 }
