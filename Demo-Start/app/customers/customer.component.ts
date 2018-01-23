@@ -6,7 +6,7 @@ import { Component, OnInit, ElementRef, Renderer, Inject } from '@angular/core';
 // Import FormBuilder to use it to build a formGroup with less code
 
 // import { FormControl } from '@angular/forms';
-import { FormGroup, FormBuilder, FormArray,
+import { FormGroup, FormBuilder, FormArray, FormControl,
         Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 import { Customer } from './customer';
@@ -69,6 +69,9 @@ export class CustomerComponent implements OnInit {
     confirmationEmailMessage: string = '';
     get addresses(): FormArray{
         return <FormArray>this.customerForm.get('addresses');
+    }
+    get emailGroup(): FormGroup {
+        return <FormGroup>this.customerForm.get('emailGroup');
     }
     private validationMessages = {
         required: 'Please enter your email address',
@@ -271,5 +274,9 @@ buildAddress(): FormGroup {
 // Add a method that creates another instance of the address group
 addAddress(): void {
     this.addresses.push(this.buildAddress());
+}
+
+removeAddress(indexToRemove: number): void {
+    this.addresses.removeAt(indexToRemove);
 }
 }

@@ -12,7 +12,7 @@
             <fieldset>
                 <div class="form-group" style=" vertical-align: top; "
                     [ngClass]="{'has-error': (customerForm.get('firstName').touched || customerForm.get('firstName').dirty) && !customerForm.get('firstName').valid }">
-                    <div class="container col-md-2" style="display:inline-block;text-align: right;">
+                    <div class="container col-md-3" style="display:inline-block;text-align: right;">
                         <label class=" control-label" 
                            for="firstNameId"
                             >First Name</label>
@@ -38,7 +38,7 @@
 
                 <div class="form-group"
                     [ngClass]="{'has-error': (customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && !customerForm.get('lastName').valid }">
-                    <label class="col-md-2 control-label" style="float: left; text-align: right"
+                    <label class="col-md-3 control-label" style="float: left; text-align: right"
                         for="lastNameId">Last Name</label>
 
                     <div class="col-md-8">
@@ -64,7 +64,7 @@
                     [ngClass]="{'has-error': customerForm.get('emailGroup').errors }">
                         <div class="form-group"
                         [ngClass]="{'has-error': emailMessage }">
-                        <label class="col-md-2 control-label" 
+                        <label class="col-md-3 control-label" 
                             for="emailId">Email</label>
     
                         <div class="col-md-8">
@@ -82,7 +82,7 @@
                     </div>
                     <div class="form-group"
                     [ngClass]="{'has-error': confirmationEmailMessage }">
-                            <label for="confirmEmailId" class="col-md-2 control-label">
+                            <label for="confirmEmailId" class="col-md-3 control-label">
                                 Confirm Email
                             </label>
                             <div class="col-md-8">
@@ -112,7 +112,7 @@
                     [ngClass]="{'has-error': (customerForm.get('rating').touched ||
                                                 customerForm.get('rating').dirty) &&
                                                 !customerForm.get('rating').valid }">
-                        <label for="ratingId" class="col-md-2 control-label">Rating</label>
+                        <label for="ratingId" class="col-md-3 control-label">Rating</label>
                         <div class="col-md-8">
                             <input type="number" 
                                 id="ratingId" 
@@ -141,7 +141,7 @@
                 </div>
                 <div class="form-group"
                     [ngClass]="{'has-error': !customerForm.get('phone').valid}">
-                    <label for="phoneId" class="col-md-2 control-label">Phone</label>
+                    <label for="phoneId" class="col-md-3 control-label">Phone</label>
                     <div class="col-md-8">
                         <input type="tel" 
                             id="phoneId" 
@@ -155,7 +155,7 @@
 
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-2">Send Notification</label>
+                    <label class="control-label col-md-3">Send Notification</label>
                     <div class="col-md-8">
                         <label class="radio-inline">
                             <input type="radio" 
@@ -175,7 +175,7 @@
                 </div>
                 <div *ngIf="customerForm.get('sendCatalog').value">
                     <div class="form-group">
-                        <div class="col-md-4 col-md-offset-2">
+                        <div class="col-md-6 col-md-offset-4">
                             <span>
                                 <button class="btn btn-primary"
                                 type="button"
@@ -184,13 +184,14 @@
                                     Add Another Address
                                 </button>
                             </span>
+                           
                         </div>
                     </div>
                     <div formArrayName="addresses" *ngFor="let address of addresses.controls; let i=index">
                         <div [formGroupName]="i">
                             <div class="form-group">
                                 <label class="col-md-2 control-label">Address Type</label>
-                                <div class="col-md-8 radio">
+                                <div class="col-md-5 col-md-offset-1 radio">
                                     <label class="radio-inline">
                                         <input type="radio" formControlName="addressType" value="home">Home
                                     </label>
@@ -201,10 +202,19 @@
                                         <input type="radio" formControlName="addressType" value="other">Other
                                     </label>
                                 </div>
+                                <div class="col-md-2 form-group">
+                                    <span>
+                                        <button class="btn btn-primary"
+                                            type="button"
+                                            (click)="removeAddress(i)">
+                                            Remove Address
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
                 
                             <div class="form-group">
-                                <label class="col-md-2 control-label" attr.for="{{ 'street1Id' + i }}">Street Address 1</label>
+                                <label class="col-md-3 control-label" attr.for="{{ 'street1Id' + i }}">Street Address 1</label>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" id="{{ 'street1Id' + i }}" placeholder="Street address" formControlName="street1"
                                         name="street1">
@@ -212,7 +222,7 @@
                             </div>
                 
                             <div class="form-group">
-                                <label class="col-md-2 control-label" attr.for="{{ 'street2Id' + i }}">Street Address 2</label>
+                                <label class="col-md-3 control-label" attr.for="{{ 'street2Id' + i }}">Street Address 2</label>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" id="{{ 'street2Id' + i }}" placeholder="Street address (second line)" formControlName="street2"
                                         name="street2">
@@ -220,7 +230,7 @@
                             </div>
                 
                             <div class="form-group">
-                                <label class="col-md-2 control-label" attr.for="{{ 'cityId' + i }}">City, State, Zip Code</label>
+                                <label class="col-md-3 control-label" attr.for="{{ 'cityId' + i }}">City, State, Zip Code</label>
                                 <div class="col-md-3">
                                     <input type="text" class="form-control" id="{{ 'cityId' + i }}" placeholder="City" formControlName="city" name="city">
                                 </div>
@@ -250,28 +260,27 @@
                 
                 <div class="form-group">
                     <div class="col-md-4 col-md-offset-2">
-                        <span>
-                            <button class="btn btn-primary"
-                                    type="submit"
-                                    [disabled]="!customerForm.valid">
-                                Save
-                            </button>
-                        </span>
-                        <span>
-                            <button class="btn btn-primary"
-                                    type="button"
-                                    (click)="populateTestData()">
-                                SetValue Test
-                            </button>
-                        </span>
-                        <span>
-                            <button class="btn btn-primary"
-                                    type="button"
-                                    (click)="populateTestData2()">
-                                PatchValue Test
-                            </button>
-                        </span>
-                        
+                        <div class="form-group">
+                            <span>
+                                <button class="btn btn-primary" type="submit" [disabled]="!customerForm.valid">
+                                    Save
+                                </button>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span>
+                                <button class="btn btn-primary" type="button" (click)="populateTestData()">
+                                    SetValue Test
+                                </button>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span>
+                                <button class="btn btn-primary" type="button" (click)="populateTestData2()">
+                                    PatchValue Test
+                                </button>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </fieldset>
@@ -293,3 +302,5 @@
 <br>Show Me: {{ showMe }}
 <br>Street: {{ addresses.get('0.street1')?.value }}
 <br>Send Catalog 2: {{ sendCatalog2 }}
+<!-- <br>EmailGroup: {{ emailGroup.get('email')?.errors | json }} -->
+<br>EmailGroup: {{ emailGroup.get('confirmEmail')?.value }}
