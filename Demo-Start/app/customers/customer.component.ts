@@ -6,7 +6,7 @@ import { Component, OnInit, ElementRef, Renderer, Inject } from '@angular/core';
 // Import FormBuilder to use it to build a formGroup with less code
 
 // import { FormControl } from '@angular/forms';
-import { FormGroup, FormBuilder,
+import { FormGroup, FormBuilder, FormArray,
         Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 import { Customer } from './customer';
@@ -67,7 +67,9 @@ export class CustomerComponent implements OnInit {
     showMe: boolean;
     emailMessage: string;
     confirmationEmailMessage: string = '';
-
+    get addresses(): FormArray{
+        return <FormArray>this.customerForm.get('addresses');
+    }
     private validationMessages = {
         required: 'Please enter your email address',
         pattern: 'Please enter a valid email address',
@@ -99,7 +101,7 @@ export class CustomerComponent implements OnInit {
             }, {validator: emailMatcher} ),
             sendCatalog: true,
             phone: '',
-            addressBlockGroup: this.buildAddress(),
+            addresses: this.fb.array([this.buildAddress()]),
             notification: 'email',
             // Uses the ratingRange validator function created by the validator function factory 
             // ratingRange takes the max and min parameters
@@ -266,5 +268,8 @@ buildAddress(): FormGroup {
     });
 }
 
-
+// Add a method that creates another instance of the address group
+addAddress(): void {
+    this.addresses.push(this.buildAddress());
+}
 }
