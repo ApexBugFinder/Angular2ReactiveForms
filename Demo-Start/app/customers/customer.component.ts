@@ -41,14 +41,16 @@ function emailMatcher(c: AbstractControl): {[key: string]: boolean} | null {
         return null;
     }
     if (emailControl.value === confirmEmailControl.value) {
+       console.log('No errors in matching');
         return null;
     }
-    if (emailControl.valid && (confirmEmailControl.dirty && confirmEmailControl.value === '')) {
+    if ((emailControl.valid && emailControl.dirty) && (confirmEmailControl.dirty && confirmEmailControl.value === '')) {
         console.log('ln47 emailMatcher emptyInput: ' + true);
-        let answer: {[key: string]: boolean} = {'emptyInput': true};
-        return answer;
+        // let answer: {[key: string]: boolean} = {'emptyInput': true};
+        return {'emptyInput': true};
     }
-    console.log('match: ' + true);
+    console.log('ln52 match: ' + true);
+    
     return { 'match': true };
 }
 
@@ -90,18 +92,21 @@ export class CustomerComponent implements OnInit {
             // to define the controls of the lastName field
             // value is going to be n/a and the field will be disabled
             lastName: ['n/a', [Validators.required, Validators.maxLength(50)]],
-            addressType: '',
+            
             emailGroup: this.fb.group({
                 email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
                 confirmEmail: ['', Validators.required],
             }, {validator: emailMatcher} ),
             sendCatalog: true,
             phone: '',
-            street1: '',
-            street2: '',
-            city: '',
-            state: '',
-            zip: '',
+            addressBlockGroup: this.fb.group({
+                addressType: 'home',
+                street1: '',
+                street2: '',
+                city: '',
+                state: '',
+                zip: '',
+            }),
             notification: 'email',
             // Uses the ratingRange validator function created by the validator function factory 
             // ratingRange takes the max and min parameters
@@ -124,8 +129,11 @@ export class CustomerComponent implements OnInit {
         const confirmationEmailControl = this.customerForm.get('emailGroup.confirmEmail');
         confirmationEmailControl.valueChanges.subscribe(value => {
                                     console.log(value);
+                                    console.log('New Error Logger: </b>')
+                                    console.log(emailGroupControl.errors);
                                     this.setConfirmationMessage(confirmationEmailControl, emailGroupControl);
                                 });
+        
         // Reactive Forms Using FormGroup
 
         // this.customerForm = new FormGroup({
@@ -221,11 +229,15 @@ setConfirmationMessage(confirmCtrl: AbstractControl, emailGrpCtrl: AbstractContr
     console.log('touched: ' + confirmCtrl.touched);
     console.log('dirty: ' + confirmCtrl.dirty);
     console.log('possible confirmationValidationMessage: ' + JSON.stringify(this.confirmationValidationMessages));
-    console.log('errors: ' + JSON.stringify(emailGrpCtrl.errors));
+    console.log('email group errors: ' + JSON.stringify(emailGrpCtrl.errors));
+    console.log('confirmation field errors: ' + JSON.stringify(confirmCtrl.errors));
     if ((confirmCtrl.touched || confirmCtrl.dirty) &&
         (emailGrpCtrl.errors || confirmCtrl.errors)) {
         console.log('lucky');
         Object.keys(emailGrpCtrl.errors).forEach(key => console.log('setConfirmation ln221: ' + key));
+        for (const key in emailGrpCtrl.errors) {
+            this.confirmationEmailMessage = this.validationMessages[key];
+        }
         this.confirmationEmailMessage = Object.keys(emailGrpCtrl.errors)
             .map(key => this.validationMessages[key])
             .join(' ');
@@ -241,9 +253,9 @@ setConfirmationMessage(confirmCtrl: AbstractControl, emailGrpCtrl: AbstractContr
 
 verifyErrorMessages(msg: any): void {
     let emailGrpCtrl = this.customerForm.get('emailGroup');
-    if ( emailGrpCtrl.errors.emptyInput ) {
-        this.confirmationEmailMessage = 'Got a chance';
-    }
+    // if ( emailGrpCtrl.errors.emptyInput ) {
+    //     this.confirmationEmailMessage = 'Got a chance';
+    // }
     console.log('Verification Method Ln233: <br/>');
     console.log(JSON.stringify(msg));
 }
