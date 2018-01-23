@@ -90,17 +90,24 @@ export class CustomerComponent implements OnInit {
             // to define the controls of the lastName field
             // value is going to be n/a and the field will be disabled
             lastName: ['n/a', [Validators.required, Validators.maxLength(50)]],
+            addressType: '',
             emailGroup: this.fb.group({
                 email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
                 confirmEmail: ['', Validators.required],
             }, {validator: emailMatcher} ),
             sendCatalog: true,
             phone: '',
+            street1: '',
+            street2: '',
+            city: '',
+            state: '',
+            zip: '',
             notification: 'email',
             // Uses the ratingRange validator function created by the validator function factory 
             // ratingRange takes the max and min parameters
             rating: ['', ratingRange(1, 5)],
-            showMe: false
+            showMe: false,
+            sendCatalog2: 12
         });
 
         // Method does the same as the setNotification method but instead of doing

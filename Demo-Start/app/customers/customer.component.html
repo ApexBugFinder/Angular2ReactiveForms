@@ -172,24 +172,27 @@
                         </label>
                     </div>
                 </div>
-                <!-- <div *ngIf="customer.sendCatalog">
+                <div *ngIf="customerForm.get('sendCatalog').value">
                     <div class="form-group" >
                         <label class="col-md-2 control-label">Address Type</label>
-                        <div class="col-md-8">
+                        <div class="col-md-8 radio">
                                 <label class="radio-inline">
-                                    <input type="radio" id="addressType1Id" value="home"
-                                           [(ngModel)]="customer.addressType"
-                                           name="addressType">Home
+                                    <input type="radio"
+                                            name="addressType"
+                                            formControlName="addressType"
+                                            value="home">Home
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" id="addressType1Id" value="work"
-                                           [(ngModel)]="customer.addressType"
-                                           name="addressType">Work
+                                    <input type="radio" 
+                                            name="addressType"
+                                           formControlName="addressType"
+                                           value="work">Work
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" id="addressType1Id" value="other"
-                                           [(ngModel)]="customer.addressType"
-                                           name="addressType">Other
+                                    <input type="radio" 
+                                            name="addressType"
+                                           formControlName="addressType"
+                                           value="other">Other
                                 </label>
                         </div>
                     </div>
@@ -202,7 +205,7 @@
                                    class="form-control" 
                                    id="street1Id" 
                                    placeholder="Street address"
-                                   [(ngModel)]="customer.street1"
+                                   formControlName="street1"
                                    name="street1">
                         </div>
                     </div>
@@ -215,7 +218,7 @@
                                    class="form-control" 
                                    id="street2Id"
                                    placeholder="Street address (second line)"
-                                   [(ngModel)]="customer.street2"
+                                   formControlName="street2"
                                    name="street2">
                         </div>
                     </div>
@@ -228,13 +231,13 @@
                                    class="form-control" 
                                    id="cityId" 
                                    placeholder="City"
-                                   [(ngModel)]="customer.city"
+                                   formControlName="city"
                                    name="city">
                         </div>
                         <div class="col-md-3">
                             <select class="form-control"
                                     id="stateId"
-                                    [(ngModel)]="customer.state"
+                                    formControlName="state"
                                     name="state">
                                 <option value="" disabled selected hidden>Select a State...</option>
                                 <option value="AL">Alabama</option>
@@ -252,11 +255,11 @@
                                    class="form-control" 
                                    id="zipId" 
                                    placeholder="Zip Code"
-                                   [(ngModel)]="customer.zip"
+                                   formControlName="zip"
                                    name="zip">
                         </div>
                     </div>
-                </div> -->
+                </div>
                 <!--  Update save button to reference the formGroup instance customerForm to check whether
                       all the inputs of the customer form are valid  -->
 
@@ -303,3 +306,5 @@
 <br>Valid: {{ customerForm.valid }}
 <br>Value: {{ customerForm.value | json }}
 <br>Show Me: {{ showMe }}
+<br>Send Catalog: {{ sendCatalog }}
+<br>Send Catalog 2: {{ sendCatalog2 }}
